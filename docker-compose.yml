@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: opspilot
+      POSTGRES_USER: opspilot
+      POSTGRES_PASSWORD: opspilot
+    ports: ["5432:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://opspilot:opspilot@db:5432/opspilot
+      LOCAL_AUTH_ENABLED: "true"
+      JWT_SECRET: change-me-before-any-shared-deployment
+    ports: ["8000:8000"]
+    depends_on: [db]
+volumes:
+  postgres_data:
